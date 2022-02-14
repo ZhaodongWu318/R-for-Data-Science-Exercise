@@ -1,0 +1,85 @@
+---
+title: "R for Data Science"
+author: "Zhaodong Wu"
+date: "2/14/2022"
+output:   
+  html_document:
+    toc: true
+    toc_float:
+      toc_collapsed: true
+    toc_depth: 3
+    number_sections: false
+    theme: lumen
+---
+
+<style type="text/css">
+  body{
+  font-size: 12pt;
+  font-family: Roman;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Chapter 1 Data Visualization with ggplot2
+
+```{r}
+# load the package
+library(tidyverse)
+library(ggplot2)
+```
+
+## P6 Exercises
+
+\ 1. Run `ggplot(data = mpg)`. What did you see?
+
+```{r}
+data("mpg")
+
+ggplot(data = mpg)
+```
+
+It creates a empty graph.
+
+\ 2. How many rows are in `mtcars`? How many columns?
+
+```{r}
+data("mtcars")
+dim(mtcars)
+```
+
+There are 32 rows and 11 columns in `mtcars`.
+
+/ 3. What does the `drv` valuable describe? Read the help `?mpg` to find out.
+
+```{r}
+?mpg
+```
+
+`drv` is the type of the drive train, where f = front-wheel drive, r = rear wheel drive, 4 = 4wd.
+
+/ 4. Make a scatterplot of `hwy` versus `cyl`.
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cyl, y = hwy, color = cyl)) +
+  ggtitle("Scatterplot of Highway Miles per Gallon versus Number of Cylinders") +
+  xlab("Number of cylinders") +
+  ylab("Highway Miles per Gallon")
+```
+
+\ 5. What happens if you make a scatterplot of `class` versus `drv`? Why is the plot not useful?
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = drv, y = class, color = drv)) +
+  ggtitle("Scatterplot of the Type of car versus Type of Drive Train") +
+  xlab("Type of Drive Train") +
+  ylab("Type of car ")
+```
+
+We can see only one point appears for each combination of drive train and car because observations with such combination are overlapped in this graph. Therefore the plot is not useful for us to analyze.
+
+## P12 Exercises
