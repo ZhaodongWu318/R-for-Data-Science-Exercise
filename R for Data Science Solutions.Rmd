@@ -64,10 +64,11 @@ There are 32 rows and 11 columns in `mtcars`.
 
 ```{r}
 ggplot(data = mpg) +
-  geom_point(mapping = aes(x = cyl, y = hwy, color = cyl)) +
+  geom_point(mapping = aes(x = as.factor(cyl), y = hwy, color = as.factor(cyl))) +
   ggtitle("Scatterplot of Highway Miles per Gallon versus Number of Cylinders") +
-  xlab("Number of cylinders") +
-  ylab("Highway Miles per Gallon")
+  xlab("Number of Cylinders") +
+  ylab("Highway Miles per Gallon") +
+  labs(color = "Number of Cylinders")
 ```
 
 \ 5. What happens if you make a scatterplot of `class` versus `drv`? Why is the plot not useful?
@@ -198,7 +199,7 @@ ggplot(data = mpg) +
   facet_wrap(~ class, nrow = 2)
 ```
 
-Advantages of using faceting is that it is useful for categorical variables,to split your plot into facets, subplots that each display one subset of the data making focus on particular facets alone. in contrast colour aesthetic having display of multiple colors with increase in categorical features can cause confusion. On the other hand, facets can be hard if we want to how each combination behaves in the whole dataset.
+Advantages of using faceting is that it is useful for categorical variables to split your plot into facets, subplots that each displays one subset of the data making focus on particular facets alone. In contrast, colour aesthetic displaying multiple colors with increasing categorical features can cause confusion. However, facets can be hard if we want to how each combination behaves in the whole dataset.
 
 \ 5. Read `?facet_wrap`. What does `nrow` do? What does `ncol` do? What other options control the layout of the individual panels? Why doesn’t `facet_grid()` have `nrow` and `ncol` arguments?
 
@@ -206,8 +207,18 @@ Advantages of using faceting is that it is useful for categorical variables,to s
 ?facet_wrap
 ```
 
-In `facet_wrap`, `nrow` and `ncol` are used to control the numbers of rows and columns of the whole layout. Other options that are used to control the layout of individual panels can be checked by `?facet_wrap`. `facet_grid()` forms a matrix of panerls defined by row and column variables so the number of rows and columns are fixed.
+In `facet_wrap`, `nrow` and `ncol` are used to control the numbers of rows and columns of the whole layout. Other options that are used to control the layout of individual panels can be checked by `?facet_wrap`. `facet_grid()` forms a matrix of panels defined by row and column variables so the number of rows and columns are fixed.
 
 \ 6. When using `facet_grid()` you should usually put the variable with more unique levels in the columns. Why?
 
 If we put more levels on the row axis, then the y-axis would shrink and it is harder to see which actual values are at the points as shown in the plot.
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(class ~ cyl) # class has more categorical levels, y axis shrank
+                          # and we neither got the full name of each level nor
+                          # accurate values
+```
+
+## P20 Exercises
