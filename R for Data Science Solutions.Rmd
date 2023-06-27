@@ -55,7 +55,7 @@ There are 32 rows and 11 columns in `mtcars`.
 \ 3. What does the `drv` valuable describe? Read the help `?mpg` to find out.
 
 ```{r}
-?mpg
+# ?mpg
 ```
 
 `drv` is the type of the drive train, where f = front-wheel drive, r = rear wheel drive, 4 = 4wd.
@@ -97,7 +97,7 @@ In this case, the aesthetic treats `blue` as a variable which we want to make cl
 \ 2. Which variables in `mpg` are categorical? Which variables are continuous? (Hint: type `?mpg` to read the documentation for the dataset). How can you see this information when you run `mpg`?
 
 ```{r}
-?mpg
+# ?mpg
 ```
 
 ```{r}
@@ -133,7 +133,7 @@ We can see both aesthetics are shown in this plot.
 \ 5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom_point)
 
 ```{r}
-?geom_point
+# ?geom_point
 
 ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, stroke = cyl))
@@ -204,7 +204,7 @@ Advantages of using faceting is that it is useful for categorical variables to s
 \ 5. Read `?facet_wrap`. What does `nrow` do? What does `ncol` do? What other options control the layout of the individual panels? Why doesn’t `facet_grid()` have `nrow` and `ncol` arguments?
 
 ```{r}
-?facet_wrap
+# ?facet_wrap
 ```
 
 In `facet_wrap`, `nrow` and `ncol` are used to control the numbers of rows and columns of the whole layout. Other options that are used to control the layout of individual panels can be checked by `?facet_wrap`. `facet_grid()` forms a matrix of panels defined by row and column variables so the number of rows and columns are fixed.
