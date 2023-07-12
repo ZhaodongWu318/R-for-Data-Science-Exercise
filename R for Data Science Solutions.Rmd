@@ -458,6 +458,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 
 The cty and highway mpg are positively correlated. `coord_fixed()` forces a specified ratio between the physical representation of data units on the axes. The default, `ratio = 1`, ensures that one unit on the x-axis is the same length as one unit on the y-axis. `geom_abline` offers reference lines to a plot, either horizontal, vertical, or diagonal. They are useful for annotating plots.
 
+# Chapter 2 Workflow: Basics
 ## P40 Exercises
 
 \ 1. Why does this code not work?
@@ -483,3 +484,114 @@ filter(diamonds, carat > 3) # diamond -> diamonds
 \ 3. Press `Alt + Shift + K`. What happens? How can you get to the same place using the menus?
 
 It gives us keyboard shortcut quick reference. To get the same reference, check `Tools - Keyboard shortcut help`.
+
+# Chapter 3 Data Transformation with dplyr
+## P49 Exercise
+```{r}
+library(dplyr)
+library(nycflights13)
+```
+\ 1. Find all flights that:
+     a. Had an arrival delay of two or more hours
+     b. Flew to Houston
+     c. Were operated by United, American, or Delta
+     d. Departed in summer (July, August and September)
+     e. Arrived more than two hours late, but didn't leave late
+     f. Were delayed by at least an hour, but made up over 30 minutes in flight
+     g. Departed between midnight and 6 a.m. (inclusive)
+```{r}
+data("flights")
+
+data49_1_a <- flights %>%
+  filter(arr_delay >= 120)
+
+data49_1_b <- flights %>%
+  filter(dest %in% c('IAH', 'HOU'))
+
+data49_1_c <- flights %>%
+  filter(carrier %in% c('UA', 'AA', 'DL'))
+
+data49_1_d <- flights %>%
+  filter(month %in% c(7, 8, 9))
+
+data49_1_e <- flights %>%
+  filter(arr_delay > 120 & dep_delay <= 0)
+
+data49_1_f <- flights %>%
+  filter(dep_delay >= 60 & (arr_delay - dep_delay) < 30)
+
+data49_1_g <- flights %>%
+  filter(dep_time >= 0 & dep_time <= 600)
+```
+
+\ 2. Another useful \boldsymbol{dplyr} filtering helper is `between()`. What does it do? Can you use it to simplify the code needed to answer the previous challenges?
+
+`between()` is a shortcut for x >= left & x <= right, implemented efficiently in C++ for local values, and translated to the appropriate SQL for remote tables. For the requirement \boldsymbol{g} in the last question, we can use 
+```{r}
+data49_1_g_2 <- flights %>%
+  filter(between(dep_time, 0, 600))
+```
+
+to get the same result.
+
+\ 3. How many flights have a missing `dep_time`? What other variables are missing? What might these rows represent?
+```{r}
+dep_time_NA <- flights %>%
+  filter(is.na(dep_time))
+```
+
+8255 flights have a missing `dep_time`. Variables `sched_dep_time`,`dep_delay`,`arr_time`,`arr_delay`,`air_time` are also missing. `sched_dep_time` represents scheduled departure time, `dep_delay` means how long was the flight delayed, `arr_time` means the arrival time, `arr_delay` means how long was the flight delayed compared to the official notice, `air_time` means the amount of time an airplane stays in the air.
+
+\ 4. Why is `NA ^ 0` not missing? Why is `NA | TRUE` not missing? Why is `FALSE & NA` not missing? Can you figure out the general rule? (`NA * 0` is a tricky example)
+
+```{r}
+NA ^ 0
+NA | TRUE
+NA | FALSE
+NA * 0
+NA & NA
+```
+
+Because anything raised to the power of 0 equals `1`.
+Because NA | TRUE is saying whether one of the two is `TRUE` and the second one is.
+Because at least one of the two expressions can be tested: FALSE & NA. In NA & NA neither can be tested and the results is `NA`.
+
+The general rule is that whenever there is a logical expressions, if one can be tested, then the result shouldn't be `NA`. And any operation that the results is determined, regardless of the number, the inputting `NA` does not affect the result.
+
+## P51 Exercises
+ 
+\ 1. How could you use `arrange()` to sort all missing values to the start? (Hint: use is.na().)
+ 
+arrange(data, desc(is.na(variable)))
+
+\ 2. Sort `flights` to find the most delayed flights. Find the flights that left earliest
+ 
+```{r}
+del_flight <- arrange(flights, desc(dep_delay))
+cbind(del_flight$flight[1], del_flight$tailnum[1])
+
+left_flight <- arrange(flights, year, month, day, dep_time)
+cbind(left_flight$flight[1], left_flight$tailnum[1])
+```
+ 
+ \ 3. Sort `flights` to find the fastest flights
+ 
+```{r}
+fastest_flights <- arrange(flights, desc(air_time))
+cbind(fastest_flights$flight[1], fastest_flights$tailnum[1], 
+      fastest_flights$air_time[1])
+```
+ 
+ \ 4. Which flights traveled the longest? Which traveled the shortest?
+ 
+```{r}
+cbind(fastest_flights$flight[1], fastest_flights$tailnum[1], 
+      fastest_flights$air_time[1])
+
+cbind(fastest_flights$flight[dim(fastest_flights)[1]], 
+      fastest_flights$tailnum[dim(fastest_flights)[1]], 
+      fastest_flights$air_time[dim(fastest_flights)[1]])
+
+```
+ 
+ 
